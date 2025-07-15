@@ -16,7 +16,6 @@ import com.ernesto.backend.examen.backend_examen.models.dtos.UserResponseDto;
 import com.ernesto.backend.examen.backend_examen.models.entities.User;
 import com.ernesto.backend.examen.backend_examen.services.UserService;
 
-import io.micrometer.core.ipc.http.HttpSender.Response;
 
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
