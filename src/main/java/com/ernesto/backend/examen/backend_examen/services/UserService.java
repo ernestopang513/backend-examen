@@ -6,10 +6,10 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.ernesto.backend.examen.backend_examen.models.dtos.CreateUserDto;
+import com.ernesto.backend.examen.backend_examen.models.dtos.UserResponseDto;
+import com.ernesto.backend.examen.backend_examen.models.entities.User;
 import com.ernesto.backend.examen.backend_examen.repositories.UserRepository;
-import com.ernesto.backend.examen.models.dtos.CreateUserDto;
-import com.ernesto.backend.examen.models.dtos.UserResponseDto;
-import com.ernesto.backend.examen.models.entities.User;
 
 @Service
 public class UserService {

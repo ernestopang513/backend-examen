@@ -1,4 +1,4 @@
-package com.ernesto.backend.examen.models.entities;
+package com.ernesto.backend.examen.backend_examen.models.entities;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 

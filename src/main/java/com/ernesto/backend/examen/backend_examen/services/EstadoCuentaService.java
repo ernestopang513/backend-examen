@@ -6,11 +6,15 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.ernesto.backend.examen.backend_examen.models.dtos.CrearEstadoCuentaDto;
+import com.ernesto.backend.examen.backend_examen.models.dtos.UdateCuentaEstadoDto;
+import com.ernesto.backend.examen.backend_examen.models.entities.EstadoCuenta;
+import com.ernesto.backend.examen.backend_examen.models.entities.User;
 import com.ernesto.backend.examen.backend_examen.repositories.EstadoCuentaRepository;
 import com.ernesto.backend.examen.backend_examen.repositories.UserRepository;
-import com.ernesto.backend.examen.models.dtos.CrearEstadoCuentaDto;
-import com.ernesto.backend.examen.models.entities.EstadoCuenta;
-import com.ernesto.backend.examen.models.entities.User;
+
+
+
 
 @Service
 public class EstadoCuentaService {
@@ -43,5 +47,19 @@ public class EstadoCuentaService {
         estadoCuentaRepository.deleteById(id);
     }
 
-    
+
+
+    public Optional<EstadoCuenta> update(UdateCuentaEstadoDto udateCuentaEstadoDto, Long id) {
+
+        Optional<EstadoCuenta> o = findById(id);
+        EstadoCuenta estadoCuentaOpt = null;
+        if (o.isPresent()){
+            EstadoCuenta estadoCuentaDB = o.orElseThrow();
+            estadoCuentaDB.setEstado("PAGADO");
+            estadoCuentaOpt = estadoCuentaRepository.save(estadoCuentaDB);
+        }
+        return Optional.ofNullable(estadoCuentaOpt);
+    }
 }
+
+

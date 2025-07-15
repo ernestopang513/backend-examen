@@ -1,4 +1,4 @@
-package com.ernesto.backend.examen.models.dtos;
+package com.ernesto.backend.examen.backend_examen.models.dtos;
 
 
 public class UserResponseDto {
