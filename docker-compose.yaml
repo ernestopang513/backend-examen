@@ -1,0 +1,14 @@
+services:
+  db:
+    image: mysql:8.0
+    restart: unless-stopped
+    ports:
+      - "3308:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: root123
+      MYSQL_DATABASE: spring1
+      MYSQL_USER: ernest1
+      MYSQL_PASSWORD: user123
+    container_name: backend-exam
+    volumes:
+      - ./crud-app-mysql:/var/lib/mysql
