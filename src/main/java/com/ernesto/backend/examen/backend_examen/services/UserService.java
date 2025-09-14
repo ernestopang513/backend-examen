@@ -10,7 +10,7 @@ public interface UserService {
 
     List<User> findAll();
 
-    Optional<User> save(User user);
+    Optional<User> save(CreateUserDto user);
 
     boolean existsByUsername(String username);
 

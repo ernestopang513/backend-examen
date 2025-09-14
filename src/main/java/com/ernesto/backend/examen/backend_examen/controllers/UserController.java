@@ -14,7 +14,6 @@ import com.ernesto.backend.examen.backend_examen.models.dtos.CreateUserDto;
 import com.ernesto.backend.examen.backend_examen.models.dtos.LoginDto;
 import com.ernesto.backend.examen.backend_examen.models.dtos.UserResponseDto;
 import com.ernesto.backend.examen.backend_examen.models.entities.User;
-import com.ernesto.backend.examen.backend_examen.repositories.RoleRepository;
 import com.ernesto.backend.examen.backend_examen.services.UserServiceImp;
 
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -32,10 +31,7 @@ public class UserController {
     @Autowired
     private UserServiceImp userService;
 
-    @Autowired
-    private RoleRepository roleRepository;
-
-    
+     
 
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody LoginDto loginDTO){
@@ -64,8 +60,8 @@ public class UserController {
     }
 
     @PostMapping
-    public ResponseEntity<?> create(@RequestBody User user) {
-        Optional<User> userOpt = userService.save(user);
+    public ResponseEntity<?> create(@RequestBody CreateUserDto createUserDto) {
+        Optional<User> userOpt = userService.save(createUserDto);
         if(userOpt.isPresent()) {
             return ResponseEntity.status(HttpStatus.CREATED).body(userOpt);
         }

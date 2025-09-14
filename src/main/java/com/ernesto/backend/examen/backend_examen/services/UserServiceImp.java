@@ -1,14 +1,19 @@
 package com.ernesto.backend.examen.backend_examen.services;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.ernesto.backend.examen.backend_examen.models.dtos.CreateUserDto;
 import com.ernesto.backend.examen.backend_examen.models.dtos.UserResponseDto;
+import com.ernesto.backend.examen.backend_examen.models.entities.Role;
 import com.ernesto.backend.examen.backend_examen.models.entities.User;
+import com.ernesto.backend.examen.backend_examen.repositories.RoleRepository;
 import com.ernesto.backend.examen.backend_examen.repositories.UserRepository;
 
 @Service
@@ -17,7 +22,16 @@ public class UserServiceImp implements UserService {
 
     @Autowired
     private UserRepository userRepository;
+    
+    @Autowired
+    private RoleRepository roleRepository;
 
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+
+    
+
+    @Transactional(readOnly = true)
     public Optional<User> login(String username, String password){
         Optional<User> userOpt = userRepository.findByUsername(username);
         if(userOpt.isPresent() && userOpt.get().getPassword().equals(password)){
@@ -25,11 +39,15 @@ public class UserServiceImp implements UserService {
         }
         return Optional.empty();
     }
-
+    
+    @Override
+    @Transactional(readOnly = true)
     public List<User> findAll() {
         return (List<User>) userRepository.findAll();
     }
 
+    @Override
+    @Transactional(readOnly = true)
     public Optional<User> findById(Long id) {
         return userRepository.findById(id);
     }
@@ -46,11 +64,34 @@ public class UserServiceImp implements UserService {
 
     //     return Optional.of(userRepository.save(user));
     // }
-    public Optional<User> save(User user) {
-        Optional<User> userOpt = userRepository.findByUsername(user.getUsername());
-        if(userOpt.isPresent()){
-            return Optional.empty();
+    @Override
+    @Transactional
+    public Optional<User> save(CreateUserDto createUserDto) {
+
+        Optional<Role> optRoleUser = roleRepository.findByName("ROLE_USER");
+        List<Role> roles = new ArrayList<>();
+        
+        optRoleUser.ifPresent(roles::add);
+
+        // if()
+
+        User user = new User();
+        user.setUsername(createUserDto.getUsername());
+        user.setEmail(createUserDto.getEmail());
+        user.setPassword( passwordEncoder.encode(createUserDto.getPassword()));
+        user.setRoles(roles);
+
+        if(createUserDto.getIsAdmin()) {
+            Optional<Role> optionalRoleAdmin = roleRepository.findByName("ROLE_ADMIN");
+            optionalRoleAdmin.ifPresent(roles::add);
         }
+        
+
+
+        // Optional<User> userOpt = userRepository.findByUsername(createUserDto.getUsername());
+        // if(userOpt.isPresent()){
+        //     return Optional.empty();
+        // }
 
 
         return Optional.of(userRepository.save(user));

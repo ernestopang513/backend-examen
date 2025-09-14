@@ -39,6 +39,8 @@ public class User {
 
     private String password;
 
+    private boolean active = true;
+
     // private String fullName;
 
     @JsonIgnoreProperties({"users", "handler", "hibernateLazyInitializer"})
@@ -95,6 +97,14 @@ public class User {
 
     public void setRoles(List<Role> roles) {
         this.roles = roles;
+    }
+
+    public boolean isActive() {
+        return active;
+    }
+
+    public void setActive(boolean active) {
+        this.active = active;
     }
    
 }
