@@ -44,7 +44,7 @@ public class UserController {
     }
 
     @GetMapping
-    public List<User> list() {
+    public List<UserResponseDto> list() {
         return userService.findAll();
     }
     
@@ -66,6 +66,12 @@ public class UserController {
             return ResponseEntity.status(HttpStatus.CREATED).body(userOpt);
         }
         return ResponseEntity.status(HttpStatus.CONFLICT).body("El nombre de usuario ya esta en uso.");
+    }
+
+    @PostMapping("/register")
+    public ResponseEntity<?> register(@RequestBody CreateUserDto createUserDto) {
+        createUserDto.setIsAdmin(false);
+        return create(createUserDto);
     }
 
     @PutMapping("/{id}")

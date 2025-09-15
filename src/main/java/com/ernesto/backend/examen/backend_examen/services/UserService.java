@@ -4,11 +4,12 @@ import java.util.List;
 import java.util.Optional;
 
 import com.ernesto.backend.examen.backend_examen.models.dtos.CreateUserDto;
+import com.ernesto.backend.examen.backend_examen.models.dtos.UserResponseDto;
 import com.ernesto.backend.examen.backend_examen.models.entities.User;
 
 public interface UserService {
 
-    List<User> findAll();
+    List<UserResponseDto> findAll();
 
     Optional<User> save(CreateUserDto user);
 

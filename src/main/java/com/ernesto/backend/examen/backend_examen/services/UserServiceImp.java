@@ -3,6 +3,7 @@ package com.ernesto.backend.examen.backend_examen.services;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -42,8 +43,17 @@ public class UserServiceImp implements UserService {
     
     @Override
     @Transactional(readOnly = true)
-    public List<User> findAll() {
-        return (List<User>) userRepository.findAll();
+    public List<UserResponseDto> findAll() {
+        // return (List<User>) userRepository.findAll().
+        return userRepository.findAll()
+            .stream()
+            .map(user -> new UserResponseDto(
+                user.getId(),
+                user.getUsername(),
+                user.getEmail(),
+                user.isActive()    
+            ))
+            .collect(Collectors.toList());
     }
 
     @Override
