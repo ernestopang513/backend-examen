@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.ernesto.backend.examen.backend_examen.models.dtos.CreateUserDto;
 import com.ernesto.backend.examen.backend_examen.models.dtos.LoginDto;
 import com.ernesto.backend.examen.backend_examen.models.dtos.UserResponseDto;
+import com.ernesto.backend.examen.backend_examen.models.entities.EstadoCuenta;
 import com.ernesto.backend.examen.backend_examen.models.entities.User;
 import com.ernesto.backend.examen.backend_examen.services.UserServiceImp;
 
@@ -82,6 +83,23 @@ public class UserController {
         }
         return ResponseEntity.notFound().build();
     }
+
+    @GetMapping("/{username}/estados-cuenta")
+    public ResponseEntity<?> findEstadosCuentaByUsername(@PathVariable String username) {
+        List<EstadoCuenta> estados = userService.findEstadosCuentaByUsername(username);
+        if(estados.isEmpty()) {
+            return ResponseEntity.noContent().build();
+        }
+        return ResponseEntity.ok(estados);
+    }
+    // @GetMapping("/{username}/estados-cuenta")
+    // public ResponseEntity<?> findEstadosCuentaByUsername(@PathVariable String username) {
+    //     List<EstadoCuenta> estados = userService.findEstadosCuentaByUsername(username);
+    //     if(estados.isEmpty()) {
+    //         return ResponseEntity.noContent().build();
+    //     }
+    //     return ResponseEntity.ok(estados);
+    // }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<?> remove(@PathVariable Long id) {

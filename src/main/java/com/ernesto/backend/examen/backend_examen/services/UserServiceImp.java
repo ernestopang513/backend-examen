@@ -12,8 +12,10 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.ernesto.backend.examen.backend_examen.models.dtos.CreateUserDto;
 import com.ernesto.backend.examen.backend_examen.models.dtos.UserResponseDto;
+import com.ernesto.backend.examen.backend_examen.models.entities.EstadoCuenta;
 import com.ernesto.backend.examen.backend_examen.models.entities.Role;
 import com.ernesto.backend.examen.backend_examen.models.entities.User;
+import com.ernesto.backend.examen.backend_examen.repositories.EstadoCuentaRepository;
 import com.ernesto.backend.examen.backend_examen.repositories.RoleRepository;
 import com.ernesto.backend.examen.backend_examen.repositories.UserRepository;
 
@@ -28,7 +30,13 @@ public class UserServiceImp implements UserService {
     private RoleRepository roleRepository;
 
     @Autowired
+    private EstadoCuentaRepository estadoCuentaRepository;
+
+    @Autowired
     private PasswordEncoder passwordEncoder;
+
+
+    
 
     
 
@@ -134,6 +142,15 @@ public class UserServiceImp implements UserService {
     @Override
     public boolean existsByUsername(String username) {
         return userRepository.existsByUsername(username);
+    }
+
+    // @Override
+    // public List<EstadoCuenta> findEstadosCuentaByUsername(String username) {
+    //     return userRepository.findByUsername(username).map(user -> estadoCuentaRepository.findByUserId(user.getId())).orElse(List.of());
+    // }    
+    @Override
+    public List<EstadoCuenta> findEstadosCuentaByUsername(String username) {
+        return estadoCuentaRepository.findByUserUsernameAndEstado(username, "PENDIENTE");
     }    
 
 
