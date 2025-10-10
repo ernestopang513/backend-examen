@@ -14,6 +14,8 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 
+import com.ernesto.backend.examen.backend_examen.models.entities.User;
+import com.ernesto.backend.examen.backend_examen.repositories.UserRepository;
 import com.ernesto.backend.examen.backend_examen.security.SimpleGrantedAuthorityJsonCreator;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -30,8 +32,11 @@ import static com.ernesto.backend.examen.backend_examen.security.TokenJwtConfig.
 
 public class JwtValidationFilter extends BasicAuthenticationFilter{
 
-    public JwtValidationFilter(AuthenticationManager authenticationManager) {
+    private UserRepository userRepository;
+
+    public JwtValidationFilter(AuthenticationManager authenticationManager, UserRepository userRepository) {
         super(authenticationManager);
+        this.userRepository = userRepository;
         
     }
 
@@ -62,8 +67,16 @@ public class JwtValidationFilter extends BasicAuthenticationFilter{
                         .addMixIn(SimpleGrantedAuthority.class, SimpleGrantedAuthorityJsonCreator.class)
                         .readValue(authoritiesClaims.toString().getBytes(), SimpleGrantedAuthority[].class));
 
-                    UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(username, null, authorities);
-                    SecurityContextHolder.getContext().setAuthentication(authenticationToken);
+                    User user = userRepository.findByUsername(username)
+                        .orElse(null);
+
+                    if (user != null) {
+                        var authToken= new UsernamePasswordAuthenticationToken(user,null, authorities);
+                        SecurityContextHolder.getContext().setAuthentication(authToken);
+                    }
+
+                    // UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(username, null, authorities);
+                    // SecurityContextHolder.getContext().setAuthentication(authenticationToken);
                     chain.doFilter(request, response);
                 } catch (JwtException e) {
                     Map<String, String> body = new HashMap<>();

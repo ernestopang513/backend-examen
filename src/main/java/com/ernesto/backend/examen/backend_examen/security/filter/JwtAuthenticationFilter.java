@@ -14,6 +14,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 import com.ernesto.backend.examen.backend_examen.models.entities.User;
+import com.ernesto.backend.examen.backend_examen.repositories.UserRepository;
 import com.fasterxml.jackson.core.exc.StreamReadException;
 import com.fasterxml.jackson.databind.DatabindException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -30,10 +31,14 @@ import static com.ernesto.backend.examen.backend_examen.security.TokenJwtConfig.
 public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilter{
 
     private AuthenticationManager authenticationManager;
+    private final UserRepository userRepository;
 
 
-    public JwtAuthenticationFilter(AuthenticationManager authenticationManager) {
+
+
+    public JwtAuthenticationFilter(AuthenticationManager authenticationManager, UserRepository userRepository) {
         this.authenticationManager = authenticationManager;
+        this.userRepository = userRepository;
     }
 
     @Override
@@ -68,11 +73,24 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
                 org.springframework.security.core.userdetails.User user = (org.springframework.security.core.userdetails.User) authResult.getPrincipal();
                 String username = user.getUsername();
 
+                User appUser = userRepository.findByUsername(username)
+                    .orElseThrow(() -> new RuntimeException("Usuario no encontrado en base de datos")  );
+
+
                 Collection<? extends GrantedAuthority> roles = authResult.getAuthorities();
+
+                Map<String, Object> userData = Map.of(
+                    "id", appUser.getId(),
+                    "username", appUser.getUsername(),
+                    "email", appUser.getEmail(),
+                    "roles", roles
+                );
+
 
                 Claims claims = Jwts.claims()
                     .add("authorities", new ObjectMapper().writeValueAsString(roles) )
-                    .add("username", username)
+                    .add("user", userData)
+                    // .add("username", username)
                 .build();
                 
 
@@ -87,9 +105,10 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 
                 response.addHeader(HEADER_AUTHORIZATION, PREFIX_TOKEN + token);
 
-                Map<String, String> body = new HashMap<>();
+                Map<String, Object> body = new HashMap<>();
                 body.put("token",token);
-                body.put("username", username);
+                body.put("user", userData);
+                // body.put("username", username);
                 // body.put("message", String.format("Hola %s has iniciado sesion con exito.", username));
 
                 response.getWriter().write(new ObjectMapper().writeValueAsString(body));

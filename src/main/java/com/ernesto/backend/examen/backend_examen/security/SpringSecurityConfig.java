@@ -13,12 +13,16 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 
+import com.ernesto.backend.examen.backend_examen.repositories.UserRepository;
 import com.ernesto.backend.examen.backend_examen.security.filter.JwtAuthenticationFilter;
 import com.ernesto.backend.examen.backend_examen.security.filter.JwtValidationFilter;
 
 @Configuration
 @EnableMethodSecurity(prePostEnabled = true)
 public class SpringSecurityConfig {
+
+    @Autowired
+    private UserRepository userRepository;
 
     @Autowired
     private AuthenticationConfiguration authenticationConfiguration;
@@ -41,8 +45,8 @@ public class SpringSecurityConfig {
         .anyRequest()
         .authenticated() )
         // .permitAll() )
-        .addFilter(new JwtAuthenticationFilter(authenticationManager()))
-        .addFilter(new JwtValidationFilter(authenticationManager()))
+        .addFilter(new JwtAuthenticationFilter(authenticationManager(), userRepository))
+        .addFilter(new JwtValidationFilter(authenticationManager(), userRepository))
         .csrf(config -> config.disable())
         .sessionManagement(management -> management.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
         .build();
