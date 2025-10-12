@@ -38,14 +38,14 @@ public class CheckStatusController {
             return ResponseEntity.status(401).body(Map.of("error", "Usuario no autenticado"));
         } 
 
-        String newToken = jwtService.generateToken(authentication);
-
+        
         User authUser = (User) authentication.getPrincipal();
-
+        
         User user = userRepository.findById(authUser.getId())
-            .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
+        .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
         // String username = authentication.getName();
-
+        
+        String newToken = jwtService.generateToken(authentication, user);
         // var principal = authentication.getPrincipal();
         // System.out.println(principal.toString() + ".getPrincipal&&&&");
         // var roles = authentication.getAuthorities();
